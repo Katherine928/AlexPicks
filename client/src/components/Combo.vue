@@ -2,15 +2,24 @@
   <div>
     <div class="input-container">
       <form action="#" class="form">
-        <div class="input-field">
-          <label for="numOfCombo">How many combo do you want to check:</label>
-          <input type="text" id="numOfCombo" />
+        <div>
+          <h3>
+            There are
+            <p class="result">{{ combos.length }}</p>
+            results in total.
+          </h3>
         </div>
-        <button class="button-27" role="button">Check Combo</button>
+        <!-- <div>
+          <div class="input-field">
+            <label for="numOfCombo">How many combo do you want to check:</label>
+            <input type="text" id="numOfCombo" />
+          </div>
+          <button class="button-27" role="button">Check Combo</button>
+        </div> -->
       </form>
     </div>
     <div class="combo-container">
-      <div class="card">
+      <div class="card" v-for="combo in combos" v-bind:key="combo.id">
         <table>
           <thead id="header">
             <tr>
@@ -20,48 +29,20 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>10,000</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>10,000</td>
+            <tr v-for="fight in combo" v-bind:key="fight.id">
+              <td>{{ fight.fight_No }}</td>
+              <td>{{ fight.playName }}</td>
+              <td>{{ formatPrice(fight.salary) }}</td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">Total Salary:</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <div class="card">
-        <table>
-          <thead id="header">
-            <tr>
-              <th>Fight No.</th>
-              <th>Name</th>
-              <th>Salary</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>10,000</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>10,000</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3">Total Salary:</td>
+              <td colspan="3">
+                Total Salary:
+                <div class="total">
+                  {{ formatPrice(getTotalSalary(combo)) }}
+                </div>
+              </td>
             </tr>
           </tfoot>
         </table>
@@ -71,8 +52,35 @@
 </template>
 
 <script>
+import FightService from "@/service/Fights";
 export default {
   name: "the-combo",
+  data() {
+    return {
+      combos: [],
+    };
+  },
+  methods: {
+    getAllCombos() {
+      FightService.getCombos().then((response) => {
+        this.combos = response.data;
+      });
+    },
+    getTotalSalary(combo) {
+      let sum = 0;
+      combo.forEach((element) => {
+        sum += element.salary;
+      });
+      return sum;
+    },
+    formatPrice(value) {
+      let val = (value / 1).toFixed(2);
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+  },
+  created() {
+    this.getAllCombos();
+  },
 };
 </script>
 
@@ -106,11 +114,42 @@ tbody > tr:nth-child(odd) {
   display: flex;
   flex-direction: row;
   column-gap: 50px;
+  row-gap: 20px;
   width: 80%;
   margin: 50px auto;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 tfoot {
   text-align: right;
+}
+form {
+  display: flex;
+  flex-direction: column;
+}
+.form {
+  padding: 50px;
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  justify-content: center;
+  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+  width: 80%;
+  margin: 20px auto;
+  font-size: large;
+  font-weight: 700;
+  align-items: baseline;
+}
+.result {
+  font-size: 50px !important;
+  color: red;
+  display: inline;
+}
+.card {
+  width: 30%;
+}
+.total {
+  color: red;
+  display: inline;
 }
 </style>

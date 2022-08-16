@@ -3,12 +3,21 @@ package com.katherine.alexPicks.model;
 import java.math.BigDecimal;
 
 public class Fight {
+    private int id;
     private String fight_No;
     private String playName;
     private BigDecimal salary;
 
     public String getFight_No() {
         return fight_No;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setFight_No(String fight_No) {

@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS fights;
 --  CACHE 1;
 
  CREATE TABLE fights (
+    id SERIAL UNIQUE,
  	fight_No varchar (8) NOT NULL,
  	player_name varchar (64) NOT NULL,
  	salary decimal(12,2) NOT NULL

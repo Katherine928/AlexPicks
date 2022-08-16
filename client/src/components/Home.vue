@@ -1,20 +1,22 @@
 <template>
   <div>
     <div class="input-container">
-      <form action="#" class="form">
+      <form class="form" v-on:submit:prevent="add">
         <div class="input-field">
           <label for="name">Name:</label>
-          <input type="text" id="name" />
+          <input type="text" id="name" v-model="fight.playName" />
         </div>
         <div class="input-field">
           <label for="number">Fight No. </label>
-          <input type="number" id="number" />
+          <input type="number" id="number" v-model="fight.fight_No" />
         </div>
         <div class="input-field">
           <label for="salary">Salary:</label>
-          <input type="text" id="salary" />
+          <input type="text" id="salary" v-model="fight.salary" />
         </div>
-        <button class="button-27" role="button">Add</button>
+        <button class="button-27" role="button" type="submit" v-on:click="add">
+          Add
+        </button>
       </form>
     </div>
     <div class="list-container">
@@ -28,27 +30,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>John Doe</td>
-            <td>10,000</td>
+          <tr v-for="fight in fights" v-bind:key="fight.playName">
+            <td>{{ fight.fight_No }}</td>
+            <td>{{ fight.playName }}</td>
+            <td>{{ formatPrice(fight.salary) }}</td>
             <td>
               <font-awesome-icon
                 icon="fa-solid fa-xmark"
                 :style="{ color: 'red' }"
                 class="delete-icon"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>John Doe</td>
-            <td>10,000</td>
-            <td>
-              <font-awesome-icon
-                icon="fa-solid fa-xmark"
-                :style="{ color: 'red' }"
-                class="delete-icon"
+                v-on:click="deleted(fight.id)"
               />
             </td>
           </tr>
@@ -59,12 +50,49 @@
 </template>
 
 <script>
+import FightService from "@/service/Fights";
+
 export default {
   name: "the-home",
+  data() {
+    return {
+      fights: [],
+      fight: {},
+    };
+  },
+  methods: {
+    getAllFights() {
+      FightService.getAllFights().then((response) => {
+        this.fights = response.data;
+      });
+    },
+    add() {
+      FightService.add(this.fight).then((response) => {
+        if (response.status === 201 || response.status === 200) {
+          this.getAllFights();
+          this.fight = {};
+        } else {
+          alert("Opps! Something went wrong!");
+        }
+      });
+    },
+    deleted(id) {
+      FightService.delete(id).then(() => {
+        this.getAllFights();
+      });
+    },
+    formatPrice(value) {
+      let val = (value / 1).toFixed(2);
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+  },
+  created() {
+    this.getAllFights();
+  },
 };
 </script>
 
-<style>
+<style scoped>
 .form {
   padding: 100px;
   display: flex;
