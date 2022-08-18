@@ -6,6 +6,7 @@
 
 <script>
 import Combo from "@/components/Combo.vue";
+
 export default {
   components: {
     Combo,

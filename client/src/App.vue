@@ -1,12 +1,25 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Add Players</router-link> |
-      <router-link to="/about">Check Combo</router-link>
-    </nav>
-    <router-view />
+  <div>
+    <Loader />
+    <div id="app">
+      <nav>
+        <router-link to="/">Add Players</router-link> |
+        <router-link to="/about">Check Combo</router-link>
+      </nav>
+      <router-view />
+    </div>
   </div>
 </template>
+
+<script>
+import Loader from "@/components/Loader.vue";
+
+export default {
+  components: {
+    Loader,
+  },
+};
+</script>
 
 <style>
 #app {
